@@ -1,7 +1,7 @@
-import { Vector } from "@upstash/vector";
+import { createClient } from "@upstash/vector";
 
-// ✅ Doğru import ve yapılandırma
-export const vectorDB = new Vector({
+// ✅ Upstash Vector DB istemcisi oluştur
+export const vectorDB = createClient({
   url: process.env.UPSTASH_VECTOR_URL!,
   token: process.env.UPSTASH_VECTOR_TOKEN!,
 });
