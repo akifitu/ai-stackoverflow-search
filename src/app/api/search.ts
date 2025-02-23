@@ -1,7 +1,9 @@
 import { vectorDB } from "@/lib/vector";
-import { Configuration, OpenAIApi } from "openai";
+import OpenAI from "openai";
 
-const openai = new OpenAIApi(new Configuration({ apiKey: process.env.OPENAI_API_KEY! }));
+const openai = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY!,
+});
 
 // 📌 Kullanıcının sorgusuna en yakın cevapları getir
 export async function searchStackOverflow(question: string) {
@@ -13,11 +15,15 @@ export async function searchStackOverflow(question: string) {
     topK: 5, // En yakın 5 sonucu al
   });
 
-  return results.matches.map((match) => match.metadata);
+  return results.matches.map((match: { metadata: Record<string, unknown> }) => match.metadata);
 }
 
 // 📌 OpenAI Embeddings API ile vektör oluştur
 async function getEmbedding(text: string): Promise<number[]> {
-  const response = await openai.createEmbedding({ model: "text-embedding-ada-002", input: text });
-  return response.data.data[0].embedding;
+  const response = await openai.embeddings.create({ // ✅ YENİ SİNTAX
+    model: "text-embedding-ada-002",
+    input: text,
+  });
+
+  return response.data[0].embedding; // ✅ YENİ DÖNÜŞ TİPİ
 }

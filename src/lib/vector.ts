@@ -1,6 +1,6 @@
-import { Vector } from "@upstash/vector";
+import { createClient } from "@upstash/vector";
 
-export const vectorDB = new Vector({
+export const vectorDB = createClient({
   url: process.env.UPSTASH_VECTOR_URL!,
   token: process.env.UPSTASH_VECTOR_TOKEN!,
 });

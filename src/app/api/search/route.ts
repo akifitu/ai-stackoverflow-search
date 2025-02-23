@@ -10,15 +10,22 @@ export async function POST(req: Request) {
 
     if (!data.items) return NextResponse.json({ error: "No results found" }, { status: 404 });
 
-    const results = data.items.map((item: any) => ({
-      question: item.title, // ❓ Sorunun başlığı
-      answer: item.answer_body || "No answer available.", // ✅ Cevap eksikse "No answer available" yaz
-      link: item.link || "", // 🔗 Stack Overflow linkini ekle
+    // ✅ `any` yerine Stack Overflow API'nin yapısına uygun bir tip kullanıyoruz
+    type StackOverflowResult = {
+      title: string;
+      link?: string;
+      answer_body?: string;
+    };
+
+    const results = data.items.map((item: StackOverflowResult) => ({
+      question: item.title, 
+      answer: item.answer_body || "No answer available.",
+      link: item.link || "",
     }));
-    
 
     return NextResponse.json(results);
   } catch (error) {
-    return NextResponse.json({ error: "Failed to fetch Stack Overflow data" }, { status: 500 });
+    console.error("API Fetch Error (search):", error);
+    return NextResponse.json({ error: "Failed to fetch search results" }, { status: 500 });
   }
 }

@@ -1,7 +1,12 @@
 import { vectorDB } from "@/lib/vector";
-import { Configuration, OpenAIApi } from "openai";
+import OpenAI from "openai";
 
-const openai = new OpenAIApi(new Configuration({ apiKey: process.env.OPENAI_API_KEY! }));
+const openai = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY!,
+});
+
+export default openai;
+
 
 // 📌 Soru ve cevapları vektör olarak kaydet
 export async function storeQuestionAnswer(question: string, answer: string, id: string) {
@@ -16,6 +21,11 @@ export async function storeQuestionAnswer(question: string, answer: string, id: 
 
 // 📌 OpenAI Embeddings API ile vektör oluştur
 async function getEmbedding(text: string): Promise<number[]> {
-  const response = await openai.createEmbedding({ model: "text-embedding-ada-002", input: text });
-  return response.data.data[0].embedding;
+  const response = await openai.embeddings.create({
+    model: "text-embedding-ada-002",
+    input: text,
+  });
+  
+  return response.data[0].embedding; // OpenAI v4 için doğru dönüş formatı
+  
 }

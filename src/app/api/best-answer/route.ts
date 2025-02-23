@@ -20,6 +20,8 @@ export async function POST(req: Request) {
     const bestAnswer = aiResponse.choices[0]?.text || "No best answer found.";
     return NextResponse.json({ answer: bestAnswer });
   } catch (error) {
+    console.error("API Fetch Error (best-answer):", error); // ✅ Hata loglanıyor
     return NextResponse.json({ error: "Failed to fetch best answer" }, { status: 500 });
   }
+  
 }

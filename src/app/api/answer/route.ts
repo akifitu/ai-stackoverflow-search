@@ -20,13 +20,19 @@ export async function GET(req: Request) {
     }
 
     // 📌 Kabul edilmiş cevap var mı kontrol edelim (is_accepted = true olan)
-    const acceptedAnswer = data.items.find((answer) => answer.is_accepted);
+    interface Answer {
+      is_accepted: boolean;
+      body: string;
+    }
     
+    const acceptedAnswer = data.items.find((answer: Answer) => answer.is_accepted);
+        
     // Eğer kabul edilmiş cevap yoksa, en yüksek oyu olan cevabı al
     const bestAnswer = acceptedAnswer || data.items[0];
 
     return NextResponse.json({ bestAnswer });
   } catch (error) {
+    console.error("API Fetch Error:", error); // ✅ Hata loglanıyor
     return NextResponse.json({ error: "Failed to fetch answer" }, { status: 500 });
   }
 }

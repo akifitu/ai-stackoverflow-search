@@ -42,9 +42,12 @@ export default function Home() {
         const bestAnswerData = await bestAnswerResponse.json();
         setBestAnswer(bestAnswerData.answer);
       }
-    } catch (err) {
-      setError("Something went wrong. Please try again.");
-    } finally {
+    } 
+      catch (err) {
+        console.error("Client-side Error:", err); // ✅ Hata loglanıyor
+        setError("Something went wrong. Please try again.");
+      }
+       finally {
       setLoading(false);
     }
   };
@@ -89,31 +92,33 @@ export default function Home() {
       {/* 🔎 Sonuçları Listeleme Alanı */}
       <div className="w-full max-w-xl mt-6">
       {results.length > 0 ? (
-  results.map((res, i) => (
-    <div key={i} className="bg-white dark:bg-gray-800 p-4 my-2 rounded-lg shadow-md border-l-4 border-blue-500">
-      {/* Debugging: Console'a linkleri yazdıralım */}
-      {console.log("Debug:", res)}
+  results.map((res, i) => {
+    console.log("Debug:", res); // ✅ JSX dışında log yazdır!
 
-      <h3 className="text-lg font-semibold text-blue-600 dark:text-blue-400">{res.question}</h3>
+    return (
+      <div key={i} className="bg-white dark:bg-gray-800 p-4 my-2 rounded-lg shadow-md border-l-4 border-blue-500">
+        <h3 className="text-lg font-semibold text-blue-600 dark:text-blue-400">{res.question}</h3>
 
-      <button
-        onClick={() => {
-          console.log("Clicked Link:", res.link); // Tıkladığında linki gösterelim
-          if (res.link && res.link.startsWith("http")) {
-            window.open(res.link, "_blank", "noopener,noreferrer");
-          } else {
-            alert("No valid link found.");
-          }
-        }}
-        className="mt-3 px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition w-full"
-      >
-        See Answer
-      </button>
-    </div>
-  ))
+        <button
+          onClick={() => {
+            console.log("Clicked Link:", res.link);
+            if (res.link && res.link.startsWith("http")) {
+              window.open(res.link, "_blank", "noopener,noreferrer");
+            } else {
+              alert("No valid link found.");
+            }
+          }}
+          className="mt-3 px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition w-full"
+        >
+          See Answer
+        </button>
+      </div>
+    );
+  })
 ) : (
   <p className="text-gray-600 dark:text-gray-400 mt-4">No results found.</p>
 )}
+
 
       </div>
 
